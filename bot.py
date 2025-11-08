@@ -118,7 +118,7 @@ def run_bot(reddit, processed_comments):
     
     # Get a timestamp for 15 minutes ago
     # We only want comments from the last 15 minutes
-    fifteen_min_ago = datetime.utcnow() - timedelta(minutes=15)
+    fifteen_min_ago = datetime.now(datetime.UTC) - timedelta(minutes=15)
     fifteen_min_timestamp = fifteen_min_ago.timestamp()
     
     # Track if we've replied this run
@@ -138,25 +138,38 @@ def run_bot(reddit, processed_comments):
             comments = subreddit.comments(limit=100)
             
             comments_checked = 0
+            comments_in_timeframe = 0
             
             for comment in comments:
                 # Stop if we already replied
                 if replied_this_run:
                     break
                 
+                # Debug: Show what we're checking
+                comment_age_minutes = (datetime.now(datetime.UTC).timestamp() - comment.created_utc) / 60
+                
                 # Skip if comment is older than 15 minutes
                 if comment.created_utc < fifteen_min_timestamp:
                     continue
                 
+                comments_in_timeframe += 1
+                
                 # Skip if we've already processed this comment
                 if comment.id in processed_comments:
+                    print(f"  - Skipping already processed comment {comment.id}")
                     continue
                 
                 # Skip if this is our own comment
                 if comment.author and comment.author.name == config.REDDIT_USERNAME:
+                    print(f"  - Skipping our own comment")
                     continue
                 
                 comments_checked += 1
+                
+                # Debug: Show each comment we're checking
+                author_name = comment.author.name if comment.author else "[deleted]"
+                comment_preview = comment.body[:60].replace('\n', ' ')
+                print(f"  - Checking comment by u/{author_name} ({comment_age_minutes:.1f}m old): '{comment_preview}'")
                 
                 # Check for keywords
                 keyword, search_term = check_for_keywords(comment.body)
@@ -188,7 +201,7 @@ def run_bot(reddit, processed_comments):
                         print(f"  ✗ Skipping - no gif found")
             
             if not replied_this_run:
-                print(f"  Checked {comments_checked} recent comments, no matches")
+                print(f"  Checked {comments_checked} recent comments ({comments_in_timeframe} in timeframe), no matches")
         
         except Exception as e:
             print(f"  ✗ Error checking r/{subreddit_name}: {e}")
