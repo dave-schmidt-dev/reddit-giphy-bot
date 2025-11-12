@@ -24,3 +24,13 @@ test_*.py
 
 # AWS (when we get there)
 .aws/
+
+# Standard ignores (auto-added)
+.dev/
+.venv/
+*.pyc
+node_modules/
+.env
+dist/
+build/
+.next/
