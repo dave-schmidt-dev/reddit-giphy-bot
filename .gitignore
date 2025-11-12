@@ -26,7 +26,6 @@ test_*.py
 .aws/
 
 # Standard ignores (auto-added)
-.dev/
 .venv/
 *.pyc
 node_modules/
