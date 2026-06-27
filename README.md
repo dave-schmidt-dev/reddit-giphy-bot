@@ -63,4 +63,4 @@ reddit-giphy-bot/
 
 ## License
 
-Personal project
+MIT — see [LICENSE](LICENSE). © 2026 David Schmidt (Zero Delta LLC).
