@@ -33,3 +33,7 @@ node_modules/
 dist/
 build/
 .next/
+HISTORY.md
+TASKS.md
+history.md
+tasks.md
